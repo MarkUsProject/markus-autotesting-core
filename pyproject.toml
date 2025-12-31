@@ -2,7 +2,7 @@
 name = "markus-autotesting-core"
 version = "0.1.0"
 description = "Core functionality for Markus Autotesting"
-authors = [
+maintainers = [
     {name = "David Liu", email = "david@cs.toronto.edu"}
 ]
 license = "MIT"
@@ -18,19 +18,8 @@ Homepage = "https://github.com/MarkUsProject/markus-autotesting-core"
 Repository = "https://github.com/MarkUsProject/markus-autotesting-core.git"
 
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-include-package-data = true
-zip-safe = false
-
-[tool.setuptools.dynamic]
-version = {attr = "python_ta.__version__"}
-#readme = {file = "README.md", content-type = "text/markdown"}
-
-[tool.setuptools.packages.find]
-include = ["markus_autotesting_core*"]
+requires = ["uv_build>=0.9.21,<0.10.0"]
+build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
