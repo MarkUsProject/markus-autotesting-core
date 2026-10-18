@@ -3,7 +3,7 @@ import json
 import msgspec
 import pytest
 
-from markus_autotesting_core.types import BaseTestData
+from markus_autotesting_core.types import BaseTestData, BaseTesterSettings
 
 
 def test_base_test_data_fields():
@@ -93,3 +93,29 @@ def test_base_test_data_duplicates_allowed_without_unique_items():
     )
 
     assert decoded.script_files == ["a.py", "a.py"]
+
+
+class FakeTesterSettings(BaseTesterSettings):
+    """A minimal concrete subclass used to test BaseTesterSettings fields."""
+
+
+def test_base_tester_settings_env_defaults_to_empty_dict():
+    """Test that _env defaults to a new empty dict for each instance, and is encoded as {}."""
+    first = msgspec.convert({"tester_type": "fake"}, type=FakeTesterSettings)
+    second = FakeTesterSettings()
+
+    assert first._env == {}
+    assert first._env is not second._env
+    assert msgspec.to_builtins(first)["_env"] == {}
+
+
+def test_base_tester_settings_env_decoding():
+    """Test that _env is decoded, and that null is rejected."""
+    decoded = msgspec.convert(
+        {"tester_type": "fake", "_env": {"PYTHON": "/bin/python3"}},
+        type=FakeTesterSettings,
+    )
+
+    assert decoded._env == {"PYTHON": "/bin/python3"}
+    with pytest.raises(msgspec.ValidationError):
+        msgspec.convert({"tester_type": "fake", "_env": None}, type=FakeTesterSettings)
