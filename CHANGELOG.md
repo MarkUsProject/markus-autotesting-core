@@ -4,6 +4,7 @@
 
 - Raised the minimum supported Python version to 3.11.
 - Pinned ruff to v0.17.1 in CI and pre-commit, and fixed new lint errors.
+- Added version bounds (`>=0.20.0,<0.23`) to the `msgspec` dependency.
 
 ## [0.1.0]
 
