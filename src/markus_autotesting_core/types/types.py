@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import reduce
-from typing import Annotated, Any, Optional, Union
+from typing import Annotated, Any
 
 from msgspec import Meta, Struct
 
@@ -14,19 +14,19 @@ class _AutotestSettings(Struct, kw_only=True):
     testers: Annotated[list, Meta(title="Testers", min_length=1)]
     """The list of testers configured for these settings."""
 
-    _user: Optional[str] = None
+    _user: str | None = None
     """The user who last updated the test settings."""
 
-    _last_access: Optional[int] = None
+    _last_access: int | None = None
     """The last time the test settings were updated."""
 
-    _files: Optional[str] = None
+    _files: str | None = None
     """A list of test files associated with these settings."""
 
-    _env_status: Optional[str] = None
+    _env_status: str | None = None
     """The status of the test environment creation for these settings."""
 
-    _error: Optional[str] = None
+    _error: str | None = None
     """An error message, populated when creating a test environment fails."""
 
 
@@ -42,7 +42,7 @@ def create_autotest_settings_class(tester_classes: list[type]) -> type[Struct]:
         {
             "__annotations__": {
                 "testers": Annotated[
-                    list[reduce(lambda a, b: Union[a, b], tester_classes)],
+                    list[reduce(lambda a, b: a | b, tester_classes)],
                     Meta(title="Testers", min_length=1),
                 ]
             }
@@ -61,14 +61,14 @@ class BaseTesterSettings(
     This is a tagged union of various testers, using `tester_type` as the discriminator field.
     """
 
-    test_data: Optional[Any] = None
+    test_data: Any | None = None
     """The settings for the tester."""
 
     @property
     def tester_type(self) -> str:
         return self.__class__.__name__.removesuffix("TesterSettings").lower()
 
-    _env: Optional[dict[str, Any]] = None
+    _env: dict[str, Any] | None = None
     """Environment variables to pass to the tester."""
 
 

@@ -11,7 +11,7 @@ keywords = ["autotesting", "markus"]
 dependencies = [
     "msgspec"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 
 [project.urls]
 Homepage = "https://github.com/MarkUsProject/markus-autotesting-core"
@@ -26,7 +26,3 @@ dev = [
     "pytest>=8.4.2",
     "ruff==0.17.1",
 ]
-
-[tool.ruff.lint]
-# msgspec evaluates annotations at runtime, so `X | None` breaks on Python 3.9.
-ignore = ["UP045"]
