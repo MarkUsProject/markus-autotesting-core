@@ -93,3 +93,16 @@ def test_base_test_data_duplicates_allowed_without_unique_items():
     )
 
     assert decoded.script_files == ["a.py", "a.py"]
+
+
+def test_base_test_data_empty_category_rejected():
+    """Test that a test group must have at least one category."""
+    with pytest.raises(msgspec.ValidationError, match="length >= 1"):
+        msgspec.convert(base_test_data(category=[]), type=BaseTestData)
+
+
+def test_base_test_data_category_schema_min_items():
+    """Test that the generated JSON schema requires at least one category."""
+    _, components = msgspec.json.schema_components([BaseTestData])
+
+    assert components["BaseTestData"]["properties"]["category"]["minItems"] == 1

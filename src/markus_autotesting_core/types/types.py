@@ -88,7 +88,7 @@ class BaseTestData(
                 Meta(extra_json_schema={"$ref": "#/definitions/test_data_categories"}),
             ]
         ],
-        Meta(title="Category", extra_json_schema={"uniqueItems": True}),
+        Meta(title="Category", min_length=1, extra_json_schema={"uniqueItems": True}),
     ]
 
     script_files: Annotated[
