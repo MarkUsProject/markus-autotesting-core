@@ -1,15 +1,15 @@
 from .types import (
-    _AutotestSettings,
     AutotestFile,
-    BaseTesterSettings,
     BaseTestData,
+    BaseTesterSettings,
+    _AutotestSettings,
     create_autotest_settings_class,
 )
 
 __all__ = [
-    "_AutotestSettings",
     "AutotestFile",
-    "BaseTesterSettings",
     "BaseTestData",
+    "BaseTesterSettings",
+    "_AutotestSettings",
     "create_autotest_settings_class",
 ]

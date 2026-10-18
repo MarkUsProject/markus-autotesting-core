@@ -24,5 +24,9 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pytest>=8.4.2",
-    "ruff>=0.14.3",
+    "ruff==0.17.1",
 ]
+
+[tool.ruff.lint]
+# msgspec evaluates annotations at runtime, so `X | None` breaks on Python 3.9.
+ignore = ["UP045"]

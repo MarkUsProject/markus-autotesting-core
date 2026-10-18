@@ -1,6 +1,7 @@
 """This file defines the core types used in the Markus Autotesting system."""
 
 from __future__ import annotations
+
 from functools import reduce
 from typing import Annotated, Any, Optional, Union
 
