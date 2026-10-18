@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from functools import reduce
-from typing import Annotated, Any
+from functools import cache, reduce
+from typing import Annotated, Any, get_args, get_origin, get_type_hints
 
 from msgspec import Meta, Struct
 
@@ -107,6 +107,29 @@ class BaseTestData(
         Any, Meta(extra_json_schema={"$ref": "#/definitions/extra_group_data"})
     ] = {}
     """Additional information for this test group."""
+
+    def __post_init__(self) -> None:
+        """Enforce `uniqueItems`, which msgspec only emits to the JSON schema and does not validate."""
+        for name in _unique_items_fields(type(self)):
+            items = getattr(self, name)
+            duplicates = [item for i, item in enumerate(items) if item in items[:i]]
+            if duplicates:
+                raise ValueError(f"`{name}` contains duplicate items: {duplicates}")
+
+
+@cache
+def _unique_items_fields(cls: type[Struct]) -> tuple[str, ...]:
+    """Return the names of the fields of cls whose Meta sets `uniqueItems` in `extra_json_schema`."""
+    hints = get_type_hints(cls, include_extras=True)
+    return tuple(
+        name
+        for name in cls.__struct_fields__
+        if get_origin(hints[name]) is Annotated
+        and any(
+            isinstance(meta, Meta) and (meta.extra_json_schema or {}).get("uniqueItems")
+            for meta in get_args(hints[name])[1:]
+        )
+    )
 
 
 AutotestFile = Annotated[
