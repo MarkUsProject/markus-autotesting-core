@@ -2,6 +2,7 @@ import json
 
 import msgspec
 import pytest
+
 from markus_autotesting_core.types import BaseTestData
 
 
