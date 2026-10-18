@@ -68,7 +68,7 @@ class BaseTesterSettings(
     def tester_type(self) -> str:
         return self.__class__.__name__.removesuffix("TesterSettings").lower()
 
-    _env: dict[str, Any] | None = None
+    _env: dict[str, Any] = {}
     """Environment variables to pass to the tester."""
 
 
