@@ -66,7 +66,8 @@ class BaseTesterSettings(
 
     @property
     def tester_type(self) -> str:
-        return self.__class__.__name__.removesuffix("TesterSettings").lower()
+        """The tag msgspec encodes as `tester_type`, including any `tag=` a subclass sets explicitly."""
+        return self.__struct_config__.tag
 
     _env: dict[str, Any] = {}
     """Environment variables to pass to the tester."""
