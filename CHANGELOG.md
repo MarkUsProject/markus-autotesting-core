@@ -8,6 +8,7 @@
 - Added decode-time validation of `uniqueItems` on `BaseTestData` fields (msgspec only emits it to the JSON schema).
 - Changed the default of `BaseTesterSettings._env` from `None` to `{}`.
 - Changed `BaseTesterSettings.tester_type` to return the struct's msgspec tag, so it matches the encoded `tester_type` when a subclass sets `tag=` explicitly.
+- Rewrote the README with usage and development documentation.
 
 ## [0.1.0]
 
