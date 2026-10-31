@@ -119,3 +119,22 @@ def test_base_tester_settings_env_decoding():
     assert decoded._env == {"PYTHON": "/bin/python3"}
     with pytest.raises(msgspec.ValidationError):
         msgspec.convert({"tester_type": "fake", "_env": None}, type=FakeTesterSettings)
+
+
+class ExplicitTagTesterSettings(BaseTesterSettings, tag="explicit"):
+    """A subclass whose tag is set explicitly rather than derived from its name."""
+
+
+@pytest.mark.parametrize(
+    "cls, expected",
+    [
+        pytest.param(FakeTesterSettings, "fake", id="derived tag"),
+        pytest.param(ExplicitTagTesterSettings, "explicit", id="explicit tag"),
+    ],
+)
+def test_base_tester_settings_tester_type_matches_tag(cls, expected):
+    """Test that tester_type is the tag msgspec encodes and decodes as `tester_type`."""
+    settings = msgspec.convert({"tester_type": expected}, type=cls)
+
+    assert settings.tester_type == expected
+    assert msgspec.to_builtins(settings)["tester_type"] == expected
