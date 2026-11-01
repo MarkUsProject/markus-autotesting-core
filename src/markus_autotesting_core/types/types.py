@@ -30,12 +30,18 @@ class _AutotestSettings(Struct, kw_only=True):
     """An error message, populated when creating a test environment fails."""
 
 
-def create_autotest_settings_class(tester_classes: list[type]) -> type[Struct]:
+def create_autotest_settings_class(
+    tester_classes: list[type[BaseTesterSettings]],
+) -> type[Struct]:
     """Dynamically create an AutotestSettings data type.
 
     This uses _AutotestSettings as the base class, replacing the `testers` annotation
     with a union of the provided tester_classes.
+
+    Raises ValueError if tester_classes is empty.
     """
+    if not tester_classes:
+        raise ValueError("At least one tester class is required")
     return type(
         "AutotestSettings",
         (_AutotestSettings,),
