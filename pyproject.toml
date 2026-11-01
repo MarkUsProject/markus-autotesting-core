@@ -1,6 +1,6 @@
 [project]
 name = "markus-autotesting-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "Core functionality for Markus Autotesting"
 maintainers = [
     {name = "David Liu", email = "david@cs.toronto.edu"}

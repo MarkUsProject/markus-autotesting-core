@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## [0.2.0]
+
 - Raised the minimum supported Python version to 3.11.
 - Pinned ruff in the dev dependencies and pre-commit (currently v0.17.3), and fixed new lint errors.
 - Added version bounds (`>=0.20.0,<0.23`) to the `msgspec` dependency.
