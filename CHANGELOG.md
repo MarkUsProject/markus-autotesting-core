@@ -9,6 +9,7 @@
 - Changed the default of `BaseTesterSettings._env` from `None` to `{}`.
 - Changed `BaseTesterSettings.tester_type` to return the struct's msgspec tag, so it matches the encoded `tester_type` when a subclass sets `tag=` explicitly.
 - Rewrote the README with usage and development documentation.
+- Ran the tests in CI on Python 3.11 to 3.15, and added a ruff formatting check to CI.
 
 ## [0.1.0]
 
