@@ -3,7 +3,11 @@ import json
 import msgspec
 import pytest
 
-from markus_autotesting_core.types import BaseTestData, BaseTesterSettings
+from markus_autotesting_core.types import (
+    BaseTestData,
+    BaseTesterSettings,
+    create_autotest_settings_class,
+)
 
 
 def test_base_test_data_fields():
@@ -138,3 +142,79 @@ def test_base_tester_settings_tester_type_matches_tag(cls, expected):
 
     assert settings.tester_type == expected
     assert msgspec.to_builtins(settings)["tester_type"] == expected
+
+
+class AlphaTesterSettings(BaseTesterSettings):
+    """A tester class used to test create_autotest_settings_class."""
+
+    test_data: list[BaseTestData]
+
+
+class BetaTesterSettings(BaseTesterSettings):
+    """A second tester class used to test create_autotest_settings_class."""
+
+    test_data: list[BaseTestData]
+
+
+def test_create_autotest_settings_class_decodes_union():
+    """Test that each tester is decoded as the class matching its tester_type."""
+    settings_class = create_autotest_settings_class(
+        [AlphaTesterSettings, BetaTesterSettings]
+    )
+
+    decoded = msgspec.convert(
+        {
+            "testers": [
+                {"tester_type": "beta", "test_data": [base_test_data()]},
+                {"tester_type": "alpha", "test_data": [base_test_data(timeout=10)]},
+            ],
+            "_user": "instructor",
+        },
+        type=settings_class,
+    )
+
+    assert [type(tester) for tester in decoded.testers] == [
+        BetaTesterSettings,
+        AlphaTesterSettings,
+    ]
+    assert decoded.testers[1].test_data[0].timeout == 10
+    assert decoded._user == "instructor"
+
+
+def test_create_autotest_settings_class_single_tester_class():
+    """Test that a single tester class can be used."""
+    settings_class = create_autotest_settings_class([AlphaTesterSettings])
+
+    decoded = msgspec.convert(
+        {"testers": [{"tester_type": "alpha", "test_data": [base_test_data()]}]},
+        type=settings_class,
+    )
+
+    assert isinstance(decoded.testers[0], AlphaTesterSettings)
+
+
+def test_create_autotest_settings_class_empty_testers_rejected():
+    """Test that settings with an empty testers list are rejected."""
+    settings_class = create_autotest_settings_class([AlphaTesterSettings])
+
+    with pytest.raises(msgspec.ValidationError):
+        msgspec.convert({"testers": []}, type=settings_class)
+
+
+def test_create_autotest_settings_class_unknown_tester_type_rejected():
+    """Test that a tester with a tester_type not in the union is rejected."""
+    settings_class = create_autotest_settings_class(
+        [AlphaTesterSettings, BetaTesterSettings]
+    )
+
+    with pytest.raises(msgspec.ValidationError):
+        msgspec.convert(
+            {"testers": [{"tester_type": "gamma", "test_data": [base_test_data()]}]},
+            type=settings_class,
+        )
+
+
+def test_create_autotest_settings_class_no_tester_classes():
+    """Test that creating a settings class with no tester classes raises ValueError."""
+    with pytest.raises(ValueError, match="At least one tester class is required"):
+        create_autotest_settings_class([])
