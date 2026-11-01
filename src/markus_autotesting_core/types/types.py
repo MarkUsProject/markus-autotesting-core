@@ -21,7 +21,7 @@ class _AutotestSettings(Struct, kw_only=True):
     """The last time the test settings were updated."""
 
     _files: str | None = None
-    """A list of test files associated with these settings."""
+    """The path of the directory where the test files for these settings were extracted."""
 
     _env_status: str | None = None
     """The status of the test environment creation for these settings."""
